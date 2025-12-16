@@ -208,3 +208,10 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+
+## Active Technologies
+- @docusaurus/theme-mermaid, @docusaurus/preset-classic, prism-react-renderer (001-physical-ai-textbook)
+- Static files (MDX, JSON) - no database (001-physical-ai-textbook)
+
+## Recent Changes
+- 001-physical-ai-textbook: Added @docusaurus/theme-mermaid, @docusaurus/preset-classic, prism-react-renderer

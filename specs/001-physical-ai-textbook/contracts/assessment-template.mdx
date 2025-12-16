@@ -1,0 +1,149 @@
+---
+sidebar_position: 99
+title: "Assessment: {{PROJECT_TITLE}}"
+description: "{{PROJECT_DESCRIPTION}}"
+---
+
+{/*
+  CONTRACT: Assessment Content Template
+  =====================================
+  This template defines the required structure for all assessment MDX files.
+
+  REQUIRED SECTIONS (in order):
+  1. Project Overview
+  2. Learning Outcomes
+  3. Requirements
+  4. Starter Resources
+  5. Submission Guidelines
+  6. Evaluation Criteria
+
+  NOTE: sidebar_position is always 99 to sort assessments to end of module
+*/}
+
+# Assessment: {{PROJECT_TITLE}}
+
+## Project Overview
+
+[Comprehensive description of what students will build and why it matters for Physical AI understanding]
+
+:::info Time Estimate
+Estimated completion time: [X hours/days]
+:::
+
+## Learning Outcomes
+
+Completing this assessment demonstrates that you can:
+
+- [ ] [Measurable skill 1]
+- [ ] [Measurable skill 2]
+- [ ] [Measurable skill 3]
+- [ ] [Measurable skill 4]
+
+## Requirements
+
+### Functional Requirements
+
+| Requirement | Description | Acceptance Criteria |
+|-------------|-------------|---------------------|
+| REQ-1 | [What the system must do] | [How to verify it works] |
+| REQ-2 | [What the system must do] | [How to verify it works] |
+| REQ-3 | [What the system must do] | [How to verify it works] |
+
+### Technical Requirements
+
+- **ROS 2 Version**: Humble or Iron
+- **Python Version**: 3.10+
+- **Required Packages**: [List of required dependencies]
+- **Simulation**: [Gazebo version or Unity requirements if applicable]
+
+### Code Quality Requirements
+
+Per constitution standards, your code MUST:
+- Include type annotations for all function signatures
+- Follow Google-style docstrings
+- Pass `ruff` linting checks
+- Pass `mypy` type checking in strict mode
+
+## Starter Resources
+
+### Repository Structure
+
+```
+your-package/
+├── package.xml
+├── setup.py
+├── setup.cfg
+├── resource/
+│   └── your_package
+├── your_package/
+│   ├── __init__.py
+│   └── [your_nodes].py
+├── launch/
+│   └── [launch_files].py
+└── test/
+    └── test_[your_tests].py
+```
+
+### Getting Started
+
+```bash
+# Clone starter template (if provided)
+git clone [starter-repo-url]
+
+# Or create new package
+cd ~/ros2_ws/src
+ros2 pkg create --build-type ament_python your_package
+```
+
+### Helpful Commands
+
+```bash
+# Build your package
+cd ~/ros2_ws
+colcon build --packages-select your_package
+
+# Source the workspace
+source install/setup.bash
+
+# Run your node
+ros2 run your_package your_node
+```
+
+## Submission Guidelines
+
+### What to Submit
+
+1. **Source Code**: Complete ROS 2 package with all required files
+2. **Documentation**: README.md explaining your implementation
+3. **Demo**: [Video/GIF/Screenshots] showing your system running
+4. **Reflection**: Brief write-up (200-300 words) on challenges faced
+
+### How to Submit
+
+[Submission method - GitHub repo link, upload, etc.]
+
+### Deadline
+
+[If applicable, state deadline or "Self-paced"]
+
+## Evaluation Criteria
+
+| Criteria | Weight | Excellent (90-100%) | Good (70-89%) | Needs Work (<70%) |
+|----------|--------|---------------------|---------------|-------------------|
+| Functionality | 40% | All requirements met, runs without errors | Most requirements met, minor issues | Missing requirements, significant errors |
+| Code Quality | 25% | Clean, typed, documented, follows standards | Mostly clean, some gaps in standards | Poor structure, missing docs/types |
+| Architecture | 20% | Well-designed nodes, proper topic usage | Reasonable design with some issues | Monolithic or poorly structured |
+| Documentation | 15% | Clear README, good comments, helpful demo | Adequate docs, basic demo | Missing or unclear documentation |
+
+---
+
+:::tip Need Help?
+Review the module topics before starting this assessment. Each topic builds the skills you'll need here.
+:::
+
+{/*
+  PLACEHOLDER: Future Features
+  - Progress tracking integration
+  - Automated testing feedback
+  - Peer review system
+*/}
