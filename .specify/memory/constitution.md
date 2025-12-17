@@ -1,12 +1,14 @@
 <!--
   SYNC IMPACT REPORT
   ==================
-  Version Change: 1.0.0 → 1.1.0 (MINOR - new principle added)
+  Version Change: 1.1.0 → 2.0.0 (MAJOR - new principle + significant stack changes)
 
-  Modified Principles: None (all existing principles unchanged)
+  Modified Principles:
+    - Principle VII: Operational Constraints (expanded with Backend/Frontend structure)
 
   Added Sections:
-    - Principle VII: Operational Constraints (CRITICAL - book/ directory mandate)
+    - Principle VIII: AI-Native Interactivity (RAG Chatbot + Personalization)
+    - Technical Stack: Better-Auth, FastAPI, OpenAI Agents SDK, Qdrant Cloud, Neon (Postgres)
 
   Removed Sections: None
 
@@ -85,12 +87,10 @@ directly impact algorithm selection and system architecture.
 
 ### VI. Syllabus Boundary Enforcement
 
-Content MUST NOT deviate from the "Hackathon I" syllabus. Prohibited topics include:
+Content MUST NOT deviate from the "Hackathon I" syllabus:
 
-- Generic web development unrelated to robot interfaces
-- AI/ML theories without robotics application
-- Hardware platforms not specified in the syllabus
-- Frameworks or tools outside the approved stack
+- **Allowed**: ROS 2, Gazebo, Unity, Isaac Sim, OpenAI Agents SDK, Better-Auth.
+- **Prohibited**: Generic web development unrelated to the course or auth/chat.
 
 When a topic approaches syllabus boundaries, explicitly state what is out of scope and why.
 
@@ -101,8 +101,10 @@ foundational Physical AI concepts before exploring tangential domains.
 
 All development work MUST respect the following operational boundaries:
 
-- **Working Directory**: All source code, documentation, and configuration files MUST be
-  located within the `book/` directory.
+- **Working Directory**: All source code MUST be located within the `book/` directory.
+- **Backend Structure**: The Chatbot and Auth backend MUST reside in `book/backend/`
+  (FastAPI).
+- **Frontend Structure**: The Docusaurus site resides in `book/` (root).
 - **Do Not Overwrite**: The `book/` folder already contains a Docusaurus project. Do NOT
   run `npx create-docusaurus`. Instead, verify the structure and add/update files within
   the existing structure.
@@ -112,20 +114,40 @@ All development work MUST respect the following operational boundaries:
 **Rationale**: Ensures agents respect the existing repository structure and do not clutter
 the root directory or delete existing work.
 
+### VIII. AI-Native Interactivity
+
+The textbook MUST function as an "Intelligent Agent", not a static PDF:
+
+- **RAG Chatbot**: Implement a Retrieval-Augmented Generation chatbot that answers
+  questions based *only* on the book's content or user-selected text. The chatbot MUST
+  NOT hallucinate information outside the textbook corpus.
+- **Personalization**: The system MUST capture user background (Software/Hardware
+  experience level) during Signup and personalize content accordingly. Experience levels
+  inform content difficulty and explanation depth.
+
+**Rationale**: We are building an "AI-Native" textbook that adapts to each learner.
+Static content fails to meet individual learning needs; intelligent interaction enables
+personalized education at scale.
+
 ## Technical Stack Requirements
 
 The following technical standards are NON-NEGOTIABLE for all content:
 
 | Component | Requirement | Justification |
 |-----------|-------------|---------------|
-| **Framework** | Docusaurus (React/MDX) | Enables interactive content, code blocks, Mermaid diagrams |
-| **Language** | Python 3.10+ | ROS 2 rclpy compatibility, type hints, pattern matching |
-| **Middleware** | ROS 2 Humble/Iron | LTS support, modern DDS architecture, industry adoption |
-| **Physics** | Gazebo (Ignition/Harmonic) | Open-source, ROS 2 native integration, GPU acceleration |
-| **Visuals** | Unity + Robotics Hub | High-fidelity visuals, domain randomization support |
-| **GPU Sim** | NVIDIA Isaac Sim | PhysX, RTX ray tracing, synthetic data generation |
-| **Edge HW** | NVIDIA Jetson Orin | GPU-accelerated inference, ROS 2 support, low power |
-| **Deployment** | GitHub Pages | Free hosting, CI/CD integration, version control |
+| **Frontend** | Docusaurus (React/MDX) | Static site generator for interactive content |
+| **Authentication** | Better-Auth | Secure signup/signin flow with user profiling |
+| **Backend API** | FastAPI (Python) | High-performance API for Chat & Auth |
+| **Agent Logic** | OpenAI Agents SDK | For RAG and intelligent responses |
+| **Vector DB** | Qdrant Cloud | Storing book embeddings for RAG retrieval |
+| **Database** | Neon (Postgres) | Storing user profiles and chat logs |
+| **Language** | Python 3.10+ | ROS 2 rclpy compatibility, type hints |
+| **Middleware** | ROS 2 Humble/Iron | LTS support, modern DDS architecture |
+| **Physics** | Gazebo (Ignition/Harmonic) | Open-source, ROS 2 native integration |
+| **Visuals** | Unity + Robotics Hub | High-fidelity visuals, domain randomization |
+| **GPU Sim** | NVIDIA Isaac Sim | PhysX, RTX ray tracing, synthetic data |
+| **Edge HW** | NVIDIA Jetson Orin | GPU-accelerated inference, ROS 2 support |
+| **Deployment** | GitHub Pages | Free hosting, CI/CD integration |
 
 Code examples MUST include:
 - Python type annotations for all function signatures
@@ -186,9 +208,11 @@ All content MUST be reviewed against this constitution before publication:
 - [ ] Reinforces Embodied Intelligence concept
 - [ ] Follows Concept First, Code Second pattern
 - [ ] Includes required Mermaid.js diagrams for architectures
-- [ ] Uses approved technical stack only
+- [ ] Uses approved technical stack (FastAPI, Better-Auth, OpenAI Agents)
 - [ ] Stays within syllabus boundaries
 - [ ] Adheres to `book/` directory operational constraints
+- [ ] **Chatbot**: Verified to answer from book content (RAG)
+- [ ] **Auth**: Verified to collect user background info on signup
 - [ ] Meets code quality gates
 
 ### Runtime Guidance
@@ -198,4 +222,4 @@ For day-to-day development guidance beyond this constitution, consult:
 - `.specify/templates/` for artifact templates
 - `specs/<feature>/` for feature-specific decisions
 
-**Version**: 1.1.0 | **Ratified**: 2025-12-16 | **Last Amended**: 2025-12-16
+**Version**: 2.0.0 | **Ratified**: 2025-12-16 | **Last Amended**: 2025-12-17
