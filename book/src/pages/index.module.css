@@ -1,6 +1,6 @@
 /**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
+ * Physical AI & Humanoid Robotics - Landing Page Styles
+ * T023: Dark theme compatible, responsive layout
  */
 
 .heroBanner {
@@ -8,6 +8,7 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
 }
 
 @media screen and (max-width: 996px) {
@@ -20,4 +21,138 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.courseGoal {
+  font-size: 1.25rem;
+  color: #8b949e;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+/* Hardware Warning Section */
+.hardwareWarning {
+  padding: 2rem 0;
+  background: rgba(255, 107, 0, 0.05);
+}
+
+.warningBox {
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 0, 0, 0.05) 100%);
+  border: 1px solid #ff6b00;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.warningBox h3 {
+  color: #ff6b00;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.warningBox p {
+  margin: 0.75rem 0;
+  line-height: 1.6;
+}
+
+.warningNote {
+  font-size: 0.9rem;
+  color: #8b949e;
+  border-top: 1px solid rgba(255, 107, 0, 0.3);
+  padding-top: 1rem;
+  margin-top: 1rem !important;
+}
+
+/* Module Cards Section */
+.modules {
+  padding: 3rem 0;
+}
+
+.moduleCard {
+  padding: 1rem;
+}
+
+.card {
+  background: var(--ifm-card-background-color, #161b22);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--ifm-color-primary, #00d4ff);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.15);
+  transform: translateY(-4px);
+}
+
+.card h2 {
+  color: var(--ifm-color-primary, #00d4ff);
+  margin-bottom: 0.25rem;
+  font-size: 1.75rem;
+}
+
+.card h3 {
+  color: #8b949e;
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.card p {
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.card ul {
+  margin: 1rem 0 1.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.card li {
+  margin: 0.5rem 0;
+  color: #c9d1d9;
+}
+
+.card .button {
+  margin-top: auto;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 996px) {
+  .modules {
+    padding: 2rem 0;
+  }
+
+  .moduleCard {
+    margin-bottom: 1rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .warningBox {
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .heroBanner {
+    padding: 1.5rem;
+  }
+
+  .courseGoal {
+    font-size: 1rem;
+  }
+
+  .card h2 {
+    font-size: 1.5rem;
+  }
 }

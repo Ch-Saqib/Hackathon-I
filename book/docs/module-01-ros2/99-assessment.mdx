@@ -1,0 +1,252 @@
+---
+sidebar_position: 99
+slug: assessment
+title: "Assessment: ROS 2 Package Development"
+description: "Demonstrate your understanding by building a complete ROS 2 package"
+---
+
+# Module 1 Assessment: ROS 2 Package Development
+
+## Overview
+
+This assessment evaluates your understanding of ROS 2 fundamentals by having you build a complete robotic perception and control package. You will create nodes that demonstrate the nervous system principles covered in Module 1.
+
+## Project Requirements
+
+### Scenario
+
+Build a **"Reactive Agent"** package that:
+1. Subscribes to simulated sensor data
+2. Processes the data to detect obstacles
+3. Publishes movement commands to avoid collisions
+
+This mimics a basic reflex arc in the nervous system: sense → process → act.
+
+### Required Components
+
+#### 1. Package Structure
+
+```
+reactive_agent/
+├── package.xml
+├── setup.py
+├── reactive_agent/
+│   ├── __init__.py
+│   ├── sensor_node.py      # Simulates sensor input
+│   ├── processor_node.py   # Decision-making logic
+│   └── actuator_node.py    # Command output
+├── launch/
+│   └── reactive_system.launch.py
+├── config/
+│   └── params.yaml
+└── test/
+    └── test_processor.py
+```
+
+#### 2. Node Specifications
+
+| Node | Input Topic | Output Topic | Responsibility |
+|------|-------------|--------------|----------------|
+| `sensor_node` | None | `/sensor/distance` | Publish simulated distance readings |
+| `processor_node` | `/sensor/distance` | `/cmd_vel` | Process readings, decide actions |
+| `actuator_node` | `/cmd_vel` | None | Log received commands |
+
+#### 3. Message Types
+
+- Sensor data: `sensor_msgs/msg/Range`
+- Velocity commands: `geometry_msgs/msg/Twist`
+
+## Evaluation Criteria
+
+### Technical Requirements (70 points)
+
+| Criterion | Points | Description |
+|-----------|--------|-------------|
+| **Node Implementation** | 20 | All three nodes run without errors |
+| **Topic Communication** | 15 | Correct pub/sub patterns, proper QoS |
+| **Class-Based Design** | 15 | Nodes extend `rclpy.node.Node` properly |
+| **Launch File** | 10 | Single launch file starts all nodes |
+| **Parameters** | 10 | At least 2 configurable parameters via YAML |
+
+### Code Quality (20 points)
+
+| Criterion | Points | Description |
+|-----------|--------|-------------|
+| **Documentation** | 10 | Docstrings on classes and key methods |
+| **Error Handling** | 5 | Graceful handling of edge cases |
+| **Code Style** | 5 | PEP 8 compliance, meaningful names |
+
+### Conceptual Understanding (10 points)
+
+| Criterion | Points | Description |
+|-----------|--------|-------------|
+| **README.md** | 10 | Explains nervous system analogy, architecture diagram |
+
+## Starter Code
+
+### Sensor Node Template
+
+```python
+#!/usr/bin/env python3
+"""
+Sensor Node - Simulates distance sensor readings.
+
+This node acts as the sensory neuron, generating input signals
+for the reactive system.
+"""
+
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import Range
+import random
+
+
+class SensorNode(Node):
+    """Simulates a distance sensor publishing Range messages."""
+
+    def __init__(self):
+        super().__init__('sensor_node')
+
+        # Declare parameters
+        self.declare_parameter('publish_rate', 10.0)  # Hz
+        self.declare_parameter('min_range', 0.1)      # meters
+        self.declare_parameter('max_range', 5.0)      # meters
+
+        # Get parameters
+        rate = self.get_parameter('publish_rate').value
+        self.min_range = self.get_parameter('min_range').value
+        self.max_range = self.get_parameter('max_range').value
+
+        # Create publisher
+        self.publisher = self.create_publisher(Range, '/sensor/distance', 10)
+
+        # Create timer
+        self.timer = self.create_timer(1.0 / rate, self.publish_reading)
+
+        self.get_logger().info('Sensor node started')
+
+    def publish_reading(self):
+        """Publish a simulated distance reading."""
+        msg = Range()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = 'sensor_frame'
+        msg.radiation_type = Range.ULTRASOUND
+        msg.field_of_view = 0.5  # radians
+        msg.min_range = self.min_range
+        msg.max_range = self.max_range
+
+        # Simulate varying distance (you could make this more realistic)
+        msg.range = random.uniform(self.min_range, self.max_range)
+
+        self.publisher.publish(msg)
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = SensorNode()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
+```
+
+### Processor Node Template
+
+```python
+#!/usr/bin/env python3
+"""
+Processor Node - Decision-making logic.
+
+TODO: Complete this node to:
+1. Subscribe to /sensor/distance
+2. Implement obstacle avoidance logic
+3. Publish Twist commands to /cmd_vel
+"""
+
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import Range
+from geometry_msgs.msg import Twist
+
+
+class ProcessorNode(Node):
+    """Processes sensor data and generates movement commands."""
+
+    def __init__(self):
+        super().__init__('processor_node')
+
+        # TODO: Declare parameters for threshold distances
+
+        # TODO: Create subscriber to /sensor/distance
+
+        # TODO: Create publisher for /cmd_vel
+
+        self.get_logger().info('Processor node started')
+
+    def sensor_callback(self, msg: Range):
+        """
+        Process incoming sensor data.
+
+        TODO: Implement logic:
+        - If distance < danger_threshold: stop or reverse
+        - If distance < caution_threshold: slow down
+        - Otherwise: proceed at normal speed
+        """
+        pass
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = ProcessorNode()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()
+```
+
+## Submission Checklist
+
+- [ ] All three nodes implemented and tested
+- [ ] Launch file starts complete system
+- [ ] Parameters configurable via YAML file
+- [ ] README.md with architecture explanation
+- [ ] Code follows ROS 2 Python best practices
+- [ ] Package builds without warnings
+
+## Bonus Challenges
+
+For additional learning (not graded):
+
+1. **Lifecycle Nodes**: Convert processor_node to a managed lifecycle node
+2. **Actions**: Add an action server for "navigate to distance" commands
+3. **Visualization**: Create an RViz config that shows sensor readings
+4. **Testing**: Add unit tests for the processor logic
+
+## Submission
+
+Package your solution as a ROS 2 package and ensure it builds with:
+
+```bash
+colcon build --packages-select reactive_agent
+colcon test --packages-select reactive_agent
+```
+
+---
+
+**Congratulations on completing Module 1!**
+
+Proceed to [Module 2: Digital Twin](../module-02-digital-twin/physics-simulation) to learn how to simulate your robot in a virtual environment.

@@ -1,30 +1,141 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * Physical AI & Humanoid Robotics - Custom CSS
+ * Robotics/Cyberpunk aesthetic for dark mode default
  */
 
-/* You can override the default Infima variables here. */
+/* Light mode (fallback) */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #0066cc;
+  --ifm-color-primary-dark: #005bb8;
+  --ifm-color-primary-darker: #0056ad;
+  --ifm-color-primary-darkest: #00478f;
+  --ifm-color-primary-light: #0071e0;
+  --ifm-color-primary-lighter: #0076eb;
+  --ifm-color-primary-lightest: #1a8aff;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* Dark mode - Robotics/Cyberpunk aesthetic */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  /* Cyan/Electric blue as primary - reminiscent of HUD displays */
+  --ifm-color-primary: #00d4ff;
+  --ifm-color-primary-dark: #00bfe6;
+  --ifm-color-primary-darker: #00b4d9;
+  --ifm-color-primary-darkest: #0094b3;
+  --ifm-color-primary-light: #1adaff;
+  --ifm-color-primary-lighter: #26ddff;
+  --ifm-color-primary-lightest: #4de4ff;
+
+  /* Dark background with slight blue tint */
+  --ifm-background-color: #0d1117;
+  --ifm-background-surface-color: #161b22;
+
+  /* Code block highlighting */
+  --docusaurus-highlighted-code-line-bg: rgba(0, 212, 255, 0.15);
+
+  /* Navbar styling */
+  --ifm-navbar-background-color: #0d1117;
+  --ifm-navbar-shadow: 0 1px 2px 0 rgba(0, 212, 255, 0.1);
+
+  /* Footer styling */
+  --ifm-footer-background-color: #010409;
+
+  /* Link colors */
+  --ifm-link-color: #00d4ff;
+  --ifm-link-hover-color: #4de4ff;
+
+  /* Menu/sidebar */
+  --ifm-menu-color-background-active: rgba(0, 212, 255, 0.1);
+
+  /* Card backgrounds */
+  --ifm-card-background-color: #161b22;
+}
+
+/* Hardware warning styling */
+.hardware-warning {
+  background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 0, 0, 0.1) 100%);
+  border: 1px solid #ff6b00;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.hardware-warning h4 {
+  color: #ff6b00;
+  margin-top: 0;
+}
+
+/* Module card styling for landing page */
+.module-card {
+  background: var(--ifm-card-background-color);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.module-card:hover {
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Mermaid diagram dark mode enhancements */
+[data-theme='dark'] .mermaid {
+  background: transparent;
+}
+
+/* Code block enhancements */
+[data-theme='dark'] pre {
+  background-color: #0d1117 !important;
+  border: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+/* Table styling for dark mode */
+[data-theme='dark'] table {
+  border-color: rgba(0, 212, 255, 0.2);
+}
+
+[data-theme='dark'] th {
+  background-color: rgba(0, 212, 255, 0.1);
+}
+
+[data-theme='dark'] tr:nth-child(2n) {
+  background-color: rgba(0, 212, 255, 0.05);
+}
+
+/* Admonition/callout styling */
+[data-theme='dark'] .alert--info {
+  --ifm-alert-background-color: rgba(0, 212, 255, 0.1);
+  --ifm-alert-border-color: #00d4ff;
+}
+
+[data-theme='dark'] .alert--warning {
+  --ifm-alert-background-color: rgba(255, 107, 0, 0.1);
+  --ifm-alert-border-color: #ff6b00;
+}
+
+/* Hero section enhancements */
+.hero--primary {
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+}
+
+/* Scrollbar styling for dark mode */
+[data-theme='dark'] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: #00d4ff;
 }

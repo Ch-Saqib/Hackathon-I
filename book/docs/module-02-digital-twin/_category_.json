@@ -1,0 +1,8 @@
+{
+  "label": "Module 2: Digital Twin",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Explore digital twin technology using Gazebo and Unity to simulate humanoid robots before deploying to physical hardware."
+  }
+}

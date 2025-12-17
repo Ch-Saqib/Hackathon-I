@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
+  title: 'Physical AI & Humanoid Robotics',
+  tagline: 'The Partnership of People, Agents, and Robots',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -15,25 +15,30 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://saqib-squad.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/Hackathon-I/',
 
   // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'saqib-squad', // GitHub org/user name.
+  projectName: 'Hackathon-I', // Repo name.
+  trailingSlash: false,
 
   onBrokenLinks: 'throw',
 
   // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
+  // useful metadata like html lang.
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
   },
+
+  // Enable Mermaid for architecture diagrams (Constitution Principle IV)
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
 
   presets: [
     [
@@ -41,26 +46,10 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          // Remove edit links for now
+          editUrl: undefined,
         },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-          // Useful options to enforce blogging best practices
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
-        },
+        blog: false, // Disable blog for textbook
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -69,27 +58,42 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
+    // Social card for Physical AI textbook
     image: 'img/docusaurus-social-card.jpg',
+
+    // Dark mode as default (Constitution requirement)
     colorMode: {
-      respectPrefersColorScheme: true,
+      defaultMode: 'dark',
+      disableSwitch: false,
+      respectPrefersColorScheme: false,
     },
+
+    // Mermaid configuration for diagrams
+    mermaid: {
+      theme: {light: 'neutral', dark: 'dark'},
+    },
+
     navbar: {
-      title: 'My Site',
+      title: 'Physical AI & Humanoid Robotics',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Physical AI Logo',
         src: 'img/logo.svg',
       },
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          sidebarId: 'module01Sidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Module 1: ROS 2',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          type: 'docSidebar',
+          sidebarId: 'module02Sidebar',
+          position: 'left',
+          label: 'Module 2: Digital Twin',
+        },
+        {
+          href: 'https://github.com/saqib-squad/Hackathon-I',
           label: 'GitHub',
           position: 'right',
         },
@@ -99,11 +103,32 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Modules',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/intro',
+              label: 'Module 1: ROS 2 - The Robotic Nervous System',
+              to: '/docs/module-01-ros2/architecture',
+            },
+            {
+              label: 'Module 2: Digital Twin',
+              to: '/docs/module-02-digital-twin/physics-simulation',
+            },
+          ],
+        },
+        {
+          title: 'Resources',
+          items: [
+            {
+              label: 'ROS 2 Documentation',
+              href: 'https://docs.ros.org/en/humble/',
+            },
+            {
+              label: 'Gazebo Sim',
+              href: 'https://gazebosim.org/',
+            },
+            {
+              label: 'NVIDIA Isaac Sim',
+              href: 'https://developer.nvidia.com/isaac-sim',
             },
           ],
         },
@@ -111,38 +136,18 @@ const config: Config = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/saqib-squad/Hackathon-I',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright ${new Date().getFullYear()} Physical AI & Humanoid Robotics. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
+      additionalLanguages: ['bash', 'python', 'yaml'],
     },
   } satisfies Preset.ThemeConfig,
 };

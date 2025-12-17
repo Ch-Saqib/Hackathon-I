@@ -1,0 +1,290 @@
+---
+sidebar_position: 99
+slug: assessment
+title: "Assessment: Digital Twin Implementation"
+description: "Demonstrate your understanding by building a Gazebo simulation"
+---
+
+# Module 2 Assessment: Digital Twin Implementation
+
+## Overview
+
+This assessment evaluates your understanding of digital twin concepts by having you create a complete Gazebo simulation environment with a robot, sensors, and ROS 2 integration.
+
+## Project Requirements
+
+### Scenario
+
+Build a **"Sensor Testbed"** simulation that:
+1. Loads a robot model in a Gazebo world
+2. Simulates LiDAR and IMU sensors with realistic noise
+3. Bridges sensor data to ROS 2
+4. Processes sensor data to detect obstacles
+
+This creates a safe virtual environment for testing perception algorithms before deploying to hardware.
+
+### Required Components
+
+#### 1. Package Structure
+
+```
+sensor_testbed/
+├── package.xml
+├── CMakeLists.txt
+├── worlds/
+│   └── test_environment.sdf      # Gazebo world with obstacles
+├── models/
+│   └── simple_robot/
+│       ├── model.config
+│       └── model.sdf             # Robot with sensors
+├── launch/
+│   └── simulation.launch.py      # Launch Gazebo + ROS bridge
+├── config/
+│   └── bridge_config.yaml        # Topic bridging configuration
+└── rviz/
+    └── sensor_view.rviz          # RViz configuration
+```
+
+#### 2. World Requirements
+
+The `test_environment.sdf` must include:
+
+| Element | Description |
+|---------|-------------|
+| Ground plane | Flat surface with friction |
+| Walls | At least 4 wall obstacles |
+| Objects | 2-3 additional obstacles (cylinders, boxes) |
+| Lighting | Directional light source |
+| Physics | Configured physics engine (ODE or DART) |
+
+#### 3. Robot Requirements
+
+The `simple_robot` model must include:
+
+| Component | Specification |
+|-----------|--------------|
+| Base | Box or cylinder, ~0.3m dimensions |
+| 2D LiDAR | 270° FOV, 10Hz, 0.1-10m range |
+| IMU | 100Hz update rate |
+| Differential drive | Two wheels + caster |
+
+#### 4. ROS 2 Integration
+
+| Topic | Type | Direction |
+|-------|------|-----------|
+| `/scan` | `sensor_msgs/LaserScan` | Gazebo → ROS |
+| `/imu/data` | `sensor_msgs/Imu` | Gazebo → ROS |
+| `/cmd_vel` | `geometry_msgs/Twist` | ROS → Gazebo |
+| `/odom` | `nav_msgs/Odometry` | Gazebo → ROS |
+
+## Evaluation Criteria
+
+### Technical Requirements (70 points)
+
+| Criterion | Points | Description |
+|-----------|--------|-------------|
+| **World File** | 15 | Valid SDF, obstacles present, physics configured |
+| **Robot Model** | 15 | Correct sensors, drives, collision geometry |
+| **Launch File** | 15 | Single launch starts Gazebo + bridge + RViz |
+| **Sensor Data** | 15 | LiDAR and IMU data visible in RViz |
+| **Teleop** | 10 | Can drive robot with `ros2 run teleop_twist_keyboard` |
+
+### Simulation Quality (20 points)
+
+| Criterion | Points | Description |
+|-----------|--------|-------------|
+| **Noise Models** | 10 | Sensors have realistic Gaussian noise |
+| **Physics Tuning** | 5 | Robot doesn't fall through floor, reasonable friction |
+| **Performance** | 5 | Simulation runs at real-time factor ≥ 0.8 |
+
+### Documentation (10 points)
+
+| Criterion | Points | Description |
+|-----------|--------|-------------|
+| **README.md** | 10 | Setup instructions, architecture diagram, known limitations |
+
+## Starter Code
+
+### World File Template
+
+```xml
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <world name="sensor_testbed">
+
+    <!-- Physics configuration -->
+    <physics name="default_physics" type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <gravity>0 0 -9.81</gravity>
+
+    <!-- Lighting -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <!-- Ground plane -->
+    <model name="ground">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>20 20</size>
+            </plane>
+          </geometry>
+          <!-- TODO: Add friction parameters -->
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>20 20</size>
+            </plane>
+          </geometry>
+        </visual>
+      </link>
+    </model>
+
+    <!-- TODO: Add wall obstacles -->
+    <!-- TODO: Add box/cylinder obstacles -->
+    <!-- TODO: Include your robot model -->
+
+  </world>
+</sdf>
+```
+
+### Robot Model Template
+
+```xml
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="simple_robot">
+    <static>false</static>
+
+    <!-- Base link -->
+    <link name="base_link">
+      <pose>0 0 0.1 0 0 0</pose>
+      <inertial>
+        <mass>5.0</mass>
+        <inertia>
+          <ixx>0.1</ixx><iyy>0.1</iyy><izz>0.1</izz>
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+          <box><size>0.3 0.2 0.1</size></box>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <box><size>0.3 0.2 0.1</size></box>
+        </geometry>
+      </visual>
+
+      <!-- TODO: Add LiDAR sensor -->
+      <!-- TODO: Add IMU sensor -->
+    </link>
+
+    <!-- TODO: Add wheels -->
+    <!-- TODO: Add wheel joints -->
+    <!-- TODO: Add differential drive plugin -->
+
+  </model>
+</sdf>
+```
+
+### Launch File Template
+
+```python
+from launch import LaunchDescription
+from launch.actions import ExecuteProcess, IncludeLaunchDescription
+from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
+import os
+
+
+def generate_launch_description():
+    pkg_path = get_package_share_directory('sensor_testbed')
+
+    world_file = os.path.join(pkg_path, 'worlds', 'test_environment.sdf')
+    rviz_config = os.path.join(pkg_path, 'rviz', 'sensor_view.rviz')
+
+    return LaunchDescription([
+        # TODO: Launch Gazebo with world file
+
+        # TODO: Launch ros_gz_bridge with appropriate topics
+
+        # TODO: Launch RViz with config
+    ])
+```
+
+## Submission Checklist
+
+- [ ] World file loads without errors in Gazebo
+- [ ] Robot spawns and remains stable (doesn't fall through floor)
+- [ ] LiDAR data visible in RViz as LaserScan
+- [ ] IMU data publishing to `/imu/data`
+- [ ] Can drive robot with keyboard teleop
+- [ ] Launch file starts complete system
+- [ ] README.md with setup instructions
+
+## Bonus Challenges
+
+For additional learning (not graded):
+
+1. **Depth Camera**: Add an RGB-D camera sensor to the robot
+2. **Obstacle Avoidance**: Write a node that uses LiDAR to avoid collisions
+3. **SLAM Integration**: Configure `slam_toolbox` to build a map
+4. **Multiple Robots**: Spawn 2 robots and namespace their topics
+
+## Testing Your Submission
+
+```bash
+# Build the package
+colcon build --packages-select sensor_testbed
+
+# Source the workspace
+source install/setup.bash
+
+# Launch the simulation
+ros2 launch sensor_testbed simulation.launch.py
+
+# In another terminal, test teleop
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+# Verify topics are publishing
+ros2 topic list
+ros2 topic echo /scan --once
+ros2 topic echo /imu/data --once
+```
+
+## Common Issues
+
+:::warning Troubleshooting
+
+**Robot falls through floor:**
+- Check collision geometry exists on both robot and ground
+- Verify physics timestep isn't too large (use 0.001s)
+
+**No sensor data:**
+- Ensure sensor plugins are correctly configured in SDF
+- Check ros_gz_bridge topic mappings match exactly
+
+**Simulation too slow:**
+- Reduce LiDAR sample count
+- Simplify collision meshes
+- Check GPU driver is properly configured
+:::
+
+---
+
+**Congratulations on completing Module 2!**
+
+You now have the foundational knowledge to create digital twin simulations for humanoid robot development. Continue exploring with more complex robot models and environments.
