@@ -123,6 +123,12 @@ A logged-in user with a Jetson hardware background reads a chapter about deployi
 - **FR-021**: System MUST support configuration via environment variables for external service credentials.
 - **FR-022**: System MUST provide a documented example of required environment variables.
 
+**Infrastructure & Deployment**
+- **FR-023**: Frontend (Docusaurus) MUST be deployed to GitHub Pages as static files.
+- **FR-024**: Backend (FastAPI) MUST be deployed to Render as a Python web service.
+- **FR-025**: Backend MUST enable CORS for the GitHub Pages origin domain.
+- **FR-026**: Frontend MUST use `API_BASE_URL` environment variable to communicate with backend.
+
 ### Key Entities
 
 - **User**: Represents a registered learner. Attributes include email, hashed password, software_skills (array of languages/tools), hardware_inventory (array of devices), created_at, last_login.
@@ -132,6 +138,12 @@ A logged-in user with a Jetson hardware background reads a chapter about deployi
 - **ContentChunk**: Represents an indexed portion of textbook content for retrieval. Attributes include chunk_id, source_page, content_text, embedding_vector, module_id.
 
 - **UserSession**: Represents an authenticated session. Attributes include session_id, user_id, created_at, expires_at.
+
+## Clarifications
+
+### Session 2025-12-17
+
+- Q: Where will the FastAPI backend be hosted (given GitHub Pages is static-only)? → A: Render (free tier Python web service with native FastAPI support, auto-deploy from GitHub)
 
 ## Assumptions
 
