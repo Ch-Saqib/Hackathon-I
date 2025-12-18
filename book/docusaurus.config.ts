@@ -15,18 +15,17 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  // For Vercel deployment, this should be your Vercel URL (or custom domain),
-  // but it can be left as-is without affecting CSS loading.
-  url: 'https://saqib-squad.github.io',
+  // For Vercel deployment, this should be your Vercel URL (or custom domain)
+  url: 'https://hackathon-i-nine.vercel.app',
   // Set the /<baseUrl>/ pathname under which your site is served.
   // On Vercel, the site is typically served from the root, so use '/'.
-  // If you ever host it under a subpath (e.g. '/book/'), update this to that path.
   baseUrl: '/',
 
   // GitHub pages deployment config.
   organizationName: 'saqib-squad', // GitHub org/user name.
   projectName: 'Hackathon-I', // Repo name.
   trailingSlash: false,
+  deploymentBranch: 'gh-pages',
 
   onBrokenLinks: 'throw',
 
