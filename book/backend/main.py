@@ -17,22 +17,12 @@ app = FastAPI(
 # Get settings
 settings = get_settings()
 
-# Configure CORS origins
-cors_origins = [
-    "http://localhost:3000",  # Local Docusaurus development
-    "http://127.0.0.1:3000",
-]
-
-# Add production GitHub Pages URL if configured
-if settings.github_pages_url:
-    cors_origins.append(settings.github_pages_url)
-
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 

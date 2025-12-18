@@ -27,6 +27,13 @@ const CloseIcon = () => (
   </svg>
 );
 
+// New Chat icon
+const NewChatIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -162,15 +169,23 @@ export default function ChatWidget() {
         {msg.sources && msg.sources.length > 0 && (
           <div className={styles.sources}>
             <strong>Sources:</strong>
-            {msg.sources.slice(0, 3).map((source, i) => (
-              <a
-                key={i}
-                href={`/docs/${source.source.replace(".mdx", "")}`}
-                className={styles.sourceLink}
-              >
-                {source.title} ({source.module})
-              </a>
-            ))}
+            {msg.sources.slice(0, 3).map((source, i) => {
+              // Build the correct link path using module info
+              const modulePath = source.module || '';
+              const fileName = source.source ? source.source.replace(".mdx", "") : '';
+              const href = modulePath && fileName 
+                ? `/docs/${modulePath}/${fileName}` 
+                : (fileName ? `/docs/${fileName}` : '#');
+              return (
+                <a
+                  key={i}
+                  href={href}
+                  className={styles.sourceLink}
+                >
+                  {source.title} ({source.module})
+                </a>
+              );
+            })}
           </div>
         )}
       </div>
@@ -197,13 +212,25 @@ export default function ChatWidget() {
               <div className={styles.professorIcon}>🎓</div>
               <h3>Ask the Professor</h3>
             </div>
-            <button
-              className={styles.closeButton}
-              onClick={() => setIsOpen(false)}
-              aria-label="Close chat"
-            >
-              <CloseIcon />
-            </button>
+            <div className={styles.headerActions}>
+              {messages.length > 0 && (
+                <button
+                  className={styles.newChatButton}
+                  onClick={() => setMessages([])}
+                  aria-label="New chat"
+                  title="Start new chat"
+                >
+                  <NewChatIcon />
+                </button>
+              )}
+              <button
+                className={styles.closeButton}
+                onClick={() => setIsOpen(false)}
+                aria-label="Close chat"
+              >
+                <CloseIcon />
+              </button>
+            </div>
           </div>
 
           {/* Messages */}
@@ -259,51 +286,15 @@ export default function ChatWidget() {
               </button>
             </div>
           ) : (
-            <div className={styles.inputContainer} style={{ 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              padding: '16px',
-              gap: '12px'
-            }}>
-              <p style={{ 
-                margin: 0, 
-                fontSize: '14px', 
-                color: '#6f6f77',
-                textAlign: 'center'
-              }}>
+            <div className={`${styles.inputContainer} ${styles.loginPrompt}`}>
+              <p className={styles.loginPromptText}>
                 Please log in to chat with the Professor
               </p>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <a
-                  href="/login"
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#0071e3',
-                    border: '1px solid #0071e3',
-                    background: 'transparent',
-                    textDecoration: 'none',
-                    transition: 'all 0.2s ease',
-                  }}
-                >
+              <div className={styles.loginButtonGroup}>
+                <a href="/login" className={styles.loginButton}>
                   Log In
                 </a>
-                <a
-                  href="/signup"
-                  style={{
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#fff',
-                    border: '1px solid #0071e3',
-                    background: '#0071e3',
-                    textDecoration: 'none',
-                    transition: 'all 0.2s ease',
-                  }}
-                >
+                <a href="/signup" className={styles.signupButton}>
                   Sign Up
                 </a>
               </div>
