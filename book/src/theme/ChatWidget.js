@@ -33,6 +33,7 @@ export default function ChatWidget() {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -40,7 +41,10 @@ export default function ChatWidget() {
   useEffect(() => {
     const token = localStorage.getItem("auth_token");
     if (token) {
+      setIsAuthenticated(true);
       fetchUserProfile(token);
+    } else {
+      setIsAuthenticated(false);
     }
   }, []);
 
@@ -232,27 +236,79 @@ export default function ChatWidget() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div className={styles.inputContainer}>
-            <input
-              ref={inputRef}
-              type="text"
-              className={styles.messageInput}
-              placeholder="Ask about ROS 2, digital twins..."
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              disabled={isLoading}
-            />
-            <button
-              className={styles.sendButton}
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isLoading}
-              aria-label="Send message"
-            >
-              <SendIcon />
-            </button>
-          </div>
+          {/* Input or Login Prompt */}
+          {isAuthenticated ? (
+            <div className={styles.inputContainer}>
+              <input
+                ref={inputRef}
+                type="text"
+                className={styles.messageInput}
+                placeholder="Ask about ROS 2, digital twins..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isLoading}
+              />
+              <button
+                className={styles.sendButton}
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim() || isLoading}
+                aria-label="Send message"
+              >
+                <SendIcon />
+              </button>
+            </div>
+          ) : (
+            <div className={styles.inputContainer} style={{ 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              padding: '16px',
+              gap: '12px'
+            }}>
+              <p style={{ 
+                margin: 0, 
+                fontSize: '14px', 
+                color: '#6f6f77',
+                textAlign: 'center'
+              }}>
+                Please log in to chat with the Professor
+              </p>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <a
+                  href="/login"
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#0071e3',
+                    border: '1px solid #0071e3',
+                    background: 'transparent',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  Log In
+                </a>
+                <a
+                  href="/signup"
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#fff',
+                    border: '1px solid #0071e3',
+                    background: '#0071e3',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  Sign Up
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </>

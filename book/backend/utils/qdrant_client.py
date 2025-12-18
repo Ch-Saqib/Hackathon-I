@@ -2,7 +2,14 @@ from typing import Optional
 
 from openai import OpenAI
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, Filter, FieldCondition, MatchValue, PointStruct, VectorParams
+from qdrant_client.models import (
+    Distance,
+    Filter,
+    FieldCondition,
+    MatchValue,
+    PointStruct,
+    VectorParams,
+)
 
 from app.config import get_settings
 
@@ -12,7 +19,9 @@ settings = get_settings()
 
 # Collection configuration
 COLLECTION_NAME = "textbook_chunks"
-EMBEDDING_MODEL = "text-embedding-004"  # Google Gemini embedding model via OpenAI-compatible API
+EMBEDDING_MODEL = (
+    "text-embedding-004"  # Google Gemini embedding model via OpenAI-compatible API
+)
 EMBEDDING_DIMENSION = 768  # Gemini embedding dimension (768 for text-embedding-004)
 
 # Google Gemini OpenAI-compatible endpoint
@@ -166,14 +175,15 @@ class QdrantWrapper:
                 ]
             )
 
-        # Search for similar chunks
-        results = self.client.search(
+        # Search for similar chunks using query_points (search is deprecated)
+        response = self.client.query_points(
             collection_name=COLLECTION_NAME,
-            query_vector=query_embedding,
+            query=query_embedding,
             limit=limit,
             query_filter=search_filter,
             with_payload=True,
         )
+        results = response.points
 
         # Format results
         chunks: list[dict] = []
@@ -261,5 +271,3 @@ def get_qdrant() -> QdrantWrapper:
     if _qdrant_wrapper is None:
         _qdrant_wrapper = QdrantWrapper()
     return _qdrant_wrapper
-
-

@@ -4,7 +4,9 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
-from agents import Agent, Runner, ModelSettings, AsyncOpenAI
+from agents import Agent, Runner, OpenAIChatCompletionsModel
+from openai import AsyncOpenAI
+from openai.types.responses import ResponseTextDeltaEvent
 
 from app.config import get_settings
 from utils.qdrant_client import get_qdrant
@@ -23,6 +25,7 @@ GEMINI_MODEL = "gemini-2.5-flash"  # Using Gemini 2.0 Flash model
 # Pydantic Models
 class ChatRequest(BaseModel):
     """Chat request with message and optional context."""
+
     message: str
     page_context: Optional[str] = None  # Current page URL or module
     user_profile: Optional[dict] = None  # Optional user profile for personalization
@@ -30,6 +33,7 @@ class ChatRequest(BaseModel):
 
 class ChatSource(BaseModel):
     """Source reference for a chat response."""
+
     title: str
     module: str
     source: str
@@ -38,6 +42,7 @@ class ChatSource(BaseModel):
 
 class ChatResponse(BaseModel):
     """Chat response with answer and sources."""
+
     answer: str
     sources: list[ChatSource]
     model: str = "gemini-2.5-flash"
@@ -45,6 +50,7 @@ class ChatResponse(BaseModel):
 
 class ChatHistoryItem(BaseModel):
     """Single chat history item."""
+
     id: str
     role: str
     content: str
@@ -53,6 +59,7 @@ class ChatHistoryItem(BaseModel):
 
 class ChatHistoryResponse(BaseModel):
     """Chat history response."""
+
     messages: list[ChatHistoryItem]
     total: int
     offset: int
@@ -146,30 +153,28 @@ async def chat(
             user_profile=user_profile,
         )
 
-        # Create OpenAI client configured for Gemini
+        # Configure OpenAI client for Gemini and set as default
         openai_client = AsyncOpenAI(
             api_key=settings.gemini_api_key,
             base_url=GEMINI_OPENAI_BASE_URL,
         )
 
+        model = OpenAIChatCompletionsModel(
+            model=GEMINI_MODEL, openai_client=openai_client
+        )
         # Create agent with system instructions using OpenAI Agents SDK
-        # Configure model settings to use Gemini via OpenAI-compatible endpoint
         agent = Agent(
             name="Professor",
             instructions=system_prompt,
-            model=ModelSettings(
-                client=openai_client,
-                model=GEMINI_MODEL,
-            ),
+            model=model,  # Pass model name as string
         )
 
-        # Run the agent with the user's message
-        result = Runner.run_sync(
-            agent,
-            request.message,
-        )
-
-        answer = result.final_output
+        # Run the agent with the user's message using async streaming
+        answer = ""
+        result = Runner.run_streamed(agent, input=request.message)
+        async for event in result.stream_events():
+            if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
+                answer += event.data.delta
 
         # Format sources
         sources = [
