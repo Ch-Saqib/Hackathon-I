@@ -53,6 +53,10 @@ const config: Config = {
           editUrl: undefined,
         },
         blog: false, // Disable blog for textbook
+        pages: {
+          path: 'src/pages',
+          routeBasePath: '/',
+        },
         theme: {
           customCss: './src/css/custom.css',
         },
