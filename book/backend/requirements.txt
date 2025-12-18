@@ -1,0 +1,30 @@
+# Physical AI Textbook Backend Dependencies
+# FastAPI and server
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+
+# OpenAI Agents SDK (used with Google Gemini OpenAI-compatible endpoint)
+openai-agents>=0.1.0
+openai>=1.40.0
+
+# Qdrant vector database client
+qdrant-client==1.7.0
+
+# Environment and configuration
+python-dotenv==1.0.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Database (Neon Postgres)
+asyncpg==0.29.0
+
+# Authentication
+bcrypt==4.1.2
+python-jose[cryptography]==3.3.0
+
+# Text processing for ingestion
+tiktoken==0.5.2
+
+uvicorn
+pydantic-settings==2.1.0
+pydantic[email]

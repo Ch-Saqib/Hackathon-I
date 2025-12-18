@@ -1,0 +1,28 @@
+# Physical AI Textbook Backend - Render Configuration
+# https://render.com/docs/yaml-spec
+
+services:
+  - type: web
+    name: physical-ai-textbook-api
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: book/backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: NEON_DATABASE_URL
+        sync: false
+      - key: BETTER_AUTH_SECRET
+        sync: false
+      - key: GITHUB_PAGES_URL
+        value: "https://yourusername.github.io/Hackathon-I"

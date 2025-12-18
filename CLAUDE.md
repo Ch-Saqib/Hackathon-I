@@ -212,6 +212,8 @@ See `.specify/memory/constitution.md` for code quality, testing, performance, se
 ## Active Technologies
 - @docusaurus/theme-mermaid, @docusaurus/preset-classic, prism-react-renderer (001-physical-ai-textbook)
 - Static files (MDX, JSON) - no database (001-physical-ai-textbook)
+- Python 3.10+ (backend), JavaScript/React (frontend) + FastAPI, Docusaurus, Better-Auth, OpenAI Agents SDK, Qdrant Client (002-ai-native-textbook-platform)
+- Neon (Postgres) for users/sessions, Qdrant Cloud for vector embeddings (002-ai-native-textbook-platform)
 
 ## Recent Changes
 - 001-physical-ai-textbook: Added @docusaurus/theme-mermaid, @docusaurus/preset-classic, prism-react-renderer
