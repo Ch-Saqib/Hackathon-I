@@ -289,20 +289,278 @@
   margin: 0;
 }
 
-/* Responsive */
-@media (max-width: 480px) {
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+/* Tablet (768px - 996px) */
+@media screen and (max-width: 996px) {
   .chatWindow {
-    width: calc(100vw - 32px);
-    right: 16px;
-    bottom: 90px;
-    height: 60vh;
+    width: 380px;
+    height: 480px;
+    right: 20px;
+    bottom: 95px;
   }
 
   .chatButton {
-    width: 50px;
-    height: 50px;
+    width: 56px;
+    height: 56px;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .chatButton svg {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+/* Mobile Large (480px - 768px) */
+@media screen and (max-width: 768px) {
+  .chatWindow {
+    width: calc(100vw - 24px);
+    max-width: 400px;
+    right: 12px;
+    bottom: 85px;
+    height: 55vh;
+    min-height: 350px;
+    max-height: 500px;
+    border-radius: 14px;
+  }
+
+  .chatButton {
+    width: 52px;
+    height: 52px;
     bottom: 16px;
-    right: 16px;
+    right: 12px;
+  }
+
+  .chatButton svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .chatHeader {
+    padding: 14px;
+  }
+
+  .chatTitle h3 {
+    font-size: 15px;
+  }
+
+  .professorIcon {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+
+  .messagesContainer {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .message {
+    max-width: 88%;
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: 14px;
+  }
+
+  .inputContainer {
+    padding: 12px;
+    gap: 6px;
+  }
+
+  .messageInput {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .sendButton {
+    width: 40px;
+    height: 40px;
+  }
+
+  .sendButton svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Mobile (< 480px) */
+@media screen and (max-width: 480px) {
+  .chatWindow {
+    width: calc(100vw - 16px);
+    right: 8px;
+    left: 8px;
+    bottom: 80px;
+    height: 60vh;
+    min-height: 320px;
+    max-height: 480px;
+    border-radius: 12px;
+  }
+
+  .chatButton {
+    width: 48px;
+    height: 48px;
+    bottom: 14px;
+    right: 14px;
+    box-shadow: 0 3px 16px rgba(0, 212, 255, 0.35);
+  }
+
+  .chatButton svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .chatHeader {
+    padding: 12px;
+  }
+
+  .chatTitle {
+    gap: 8px;
+  }
+
+  .chatTitle h3 {
+    font-size: 14px;
+  }
+
+  .professorIcon {
+    width: 26px;
+    height: 26px;
+    font-size: 14px;
+  }
+
+  .closeButton {
+    font-size: 18px;
+    padding: 2px;
+  }
+
+  .newChatButton {
+    padding: 4px;
+  }
+
+  .newChatButton svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .messagesContainer {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .message {
+    max-width: 90%;
+    padding: 8px 12px;
+    font-size: 13px;
+    border-radius: 12px;
+    line-height: 1.45;
+  }
+
+  .sources {
+    font-size: 11px;
+    margin-top: 6px;
+    padding-top: 6px;
+  }
+
+  .loadingDots {
+    padding: 10px 14px;
+  }
+
+  .loadingDots span {
+    width: 6px;
+    height: 6px;
+  }
+
+  .inputContainer {
+    padding: 10px;
+    gap: 6px;
+  }
+
+  .messageInput {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-radius: 20px;
+  }
+
+  .sendButton {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+  }
+
+  .sendButton svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .welcomeMessage {
+    padding: 16px;
+  }
+
+  .welcomeMessage h4 {
+    font-size: 14px;
+  }
+
+  .welcomeMessage p {
+    font-size: 12px;
+  }
+
+  /* Login prompt responsive */
+  .loginPrompt {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .loginPromptText {
+    font-size: 12px;
+  }
+
+  .loginButtonGroup {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .loginButton,
+  .signupButton {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 13px;
+    text-align: center;
+  }
+}
+
+/* Very small screens (< 360px) */
+@media screen and (max-width: 360px) {
+  .chatWindow {
+    height: 65vh;
+    min-height: 300px;
+  }
+
+  .chatButton {
+    width: 44px;
+    height: 44px;
+    bottom: 12px;
+    right: 12px;
+  }
+
+  .chatButton svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .chatTitle h3 {
+    font-size: 13px;
+  }
+
+  .message {
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+
+  .messageInput {
+    font-size: 12px;
   }
 }
 

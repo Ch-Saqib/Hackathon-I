@@ -173,7 +173,9 @@ async def chat(
         answer = ""
         result = Runner.run_streamed(agent, input=request.message)
         async for event in result.stream_events():
-            if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
+            if event.type == "raw_response_event" and isinstance(
+                event.data, ResponseTextDeltaEvent
+            ):
                 answer += event.data.delta
 
         # Format sources
@@ -193,6 +195,9 @@ async def chat(
         )
 
     except Exception as e:
+        import traceback
+
+        traceback.print_exc()  # Print full traceback to console
         raise HTTPException(
             status_code=500,
             detail=f"Chat processing failed: {str(e)}",

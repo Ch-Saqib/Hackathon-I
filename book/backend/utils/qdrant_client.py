@@ -175,15 +175,53 @@ class QdrantWrapper:
                 ]
             )
 
-        # Search for similar chunks using query_points (search is deprecated)
-        response = self.client.query_points(
-            collection_name=COLLECTION_NAME,
-            query=query_embedding,
-            limit=limit,
-            query_filter=search_filter,
-            with_payload=True,
-        )
-        results = response.points
+        # Search for similar chunks - try different API methods for version compatibility
+        results = []
+
+        # Try query_points first (qdrant-client >= 1.8)
+        if hasattr(self.client, "query_points"):
+            try:
+                response = self.client.query_points(
+                    collection_name=COLLECTION_NAME,
+                    query=query_embedding,
+                    limit=limit,
+                    query_filter=search_filter,
+                    with_payload=True,
+                )
+                results = response.points
+            except Exception:
+                pass
+
+        # Fallback to query (qdrant-client 1.7.x)
+        if not results and hasattr(self.client, "query"):
+            try:
+                response = self.client.query(
+                    collection_name=COLLECTION_NAME,
+                    query_vector=query_embedding,
+                    limit=limit,
+                    query_filter=search_filter,
+                    with_payload=True,
+                )
+                results = (
+                    response
+                    if isinstance(response, list)
+                    else getattr(response, "points", [])
+                )
+            except Exception:
+                pass
+
+        # Fallback to search (older qdrant-client versions)
+        if not results and hasattr(self.client, "search"):
+            try:
+                results = self.client.search(
+                    collection_name=COLLECTION_NAME,
+                    query_vector=query_embedding,
+                    limit=limit,
+                    query_filter=search_filter,
+                    with_payload=True,
+                )
+            except Exception:
+                pass
 
         # Format results
         chunks: list[dict] = []
