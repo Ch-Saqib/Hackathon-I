@@ -1,11 +1,59 @@
 .features {
   display: flex;
   align-items: center;
-  padding: 2rem 0;
+  justify-content: center;
+  padding: 3rem 0;
   width: 100%;
+  background: var(--ifm-background-surface-color, #f5f6f7);
+}
+
+[data-theme='dark'] .features {
+  background: var(--ifm-background-surface-color, #161b22);
 }
 
 .featureSvg {
   height: 200px;
   width: 200px;
+  max-width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.featureSvg:hover {
+  transform: scale(1.05);
+}
+
+/* Tablet (768px - 996px) */
+@media screen and (max-width: 996px) {
+  .features {
+    padding: 2.5rem 0;
+  }
+
+  .featureSvg {
+    height: 180px;
+    width: 180px;
+  }
+}
+
+/* Mobile Large (480px - 768px) */
+@media screen and (max-width: 768px) {
+  .features {
+    padding: 2rem 0;
+  }
+
+  .featureSvg {
+    height: 150px;
+    width: 150px;
+  }
+}
+
+/* Mobile (< 480px) */
+@media screen and (max-width: 480px) {
+  .features {
+    padding: 1.5rem 0;
+  }
+
+  .featureSvg {
+    height: 120px;
+    width: 120px;
+  }
 }

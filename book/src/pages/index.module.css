@@ -24,6 +24,19 @@
   margin-top: 1.5rem;
 }
 
+/* Ensure button text is visible in dark mode */
+.buttons .button--secondary {
+  color: #1a1a2e !important;
+  background-color: #ffffff;
+  border-color: #ffffff;
+}
+
+.buttons .button--secondary:hover {
+  color: #ffffff !important;
+  background-color: transparent;
+  border-color: #ffffff;
+}
+
 .courseGoal {
   font-size: 1.25rem;
   color: #8b949e;
@@ -39,7 +52,11 @@
 }
 
 .warningBox {
-  background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 0, 0, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 0, 0.1) 0%,
+    rgba(255, 0, 0, 0.05) 100%
+  );
   border: 1px solid #ff6b00;
   border-radius: 12px;
   padding: 1.5rem 2rem;
@@ -124,35 +141,232 @@
   margin-top: auto;
 }
 
-/* Responsive Design */
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+/* Large Desktop (>1200px) - default styles above */
+
+/* Desktop (996px - 1200px) */
+@media screen and (max-width: 1200px) {
+  .modules {
+    padding: 2.5rem 0;
+  }
+
+  .card {
+    padding: 1.75rem;
+  }
+
+  .card h2 {
+    font-size: 1.6rem;
+  }
+}
+
+/* Tablet (768px - 996px) */
 @media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 3rem 1.5rem;
+  }
+
   .modules {
     padding: 2rem 0;
   }
 
   .moduleCard {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
 
   .card {
     padding: 1.5rem;
   }
 
+  .card h2 {
+    font-size: 1.5rem;
+  }
+
+  .card h3 {
+    font-size: 1rem;
+  }
+
+  .card p {
+    font-size: 0.95rem;
+  }
+
   .warningBox {
-    padding: 1rem 1.5rem;
+    padding: 1.25rem 1.5rem;
+    max-width: 100%;
+  }
+
+  .warningBox h3 {
+    font-size: 1.35rem;
+  }
+
+  .buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .buttons .button {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .courseGoal {
+    font-size: 1.1rem;
+    padding: 0 1rem;
   }
 }
 
-@media screen and (max-width: 576px) {
+/* Mobile Large (480px - 768px) */
+@media screen and (max-width: 768px) {
   .heroBanner {
-    padding: 1.5rem;
+    padding: 2.5rem 1rem;
+  }
+
+  .modules {
+    padding: 1.5rem 0;
+  }
+
+  .moduleCard {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card {
+    padding: 1.25rem;
+    border-radius: 10px;
+  }
+
+  .card h2 {
+    font-size: 1.4rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .card h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .card p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .card ul {
+    margin: 0.75rem 0 1rem 0;
+    padding-left: 1.25rem;
+  }
+
+  .card li {
+    font-size: 0.9rem;
+    margin: 0.35rem 0;
+  }
+
+  .hardwareWarning {
+    padding: 1.5rem 0;
+  }
+
+  .warningBox {
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+  }
+
+  .warningBox h3 {
+    font-size: 1.25rem;
+  }
+
+  .warningBox p {
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+  }
+
+  .warningNote {
+    font-size: 0.85rem;
   }
 
   .courseGoal {
     font-size: 1rem;
+    margin-bottom: 1.25rem;
+  }
+}
+
+/* Mobile (< 480px) */
+@media screen and (max-width: 480px) {
+  .heroBanner {
+    padding: 2rem 0.75rem;
+  }
+
+  .modules {
+    padding: 1rem 0;
+  }
+
+  .moduleCard {
+    padding: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .card {
+    padding: 1rem;
+    border-radius: 8px;
   }
 
   .card h2 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+  }
+
+  .card h3 {
+    font-size: 0.9rem;
+  }
+
+  .card p {
+    font-size: 0.85rem;
+  }
+
+  .card ul {
+    padding-left: 1rem;
+  }
+
+  .card li {
+    font-size: 0.85rem;
+  }
+
+  .card .button {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .hardwareWarning {
+    padding: 1rem 0;
+  }
+
+  .warningBox {
+    padding: 0.875rem 1rem;
+  }
+
+  .warningBox h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .warningBox p {
+    font-size: 0.85rem;
+  }
+
+  .warningNote {
+    font-size: 0.8rem;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem !important;
+  }
+
+  .courseGoal {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+  }
+
+  .buttons {
+    margin-top: 1rem;
   }
 }
