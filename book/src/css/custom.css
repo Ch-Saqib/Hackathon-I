@@ -3,6 +3,26 @@
  * Robotics/Cyberpunk aesthetic for dark mode default
  */
 
+.hero__title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.hero__subtitle {
+  font-size: 1.3rem;
+  opacity: 0.75;
+  color: #ffffff
+}
+
+.hero {
+  background: transparent;
+}
+
+.hero--primary {
+  background: transparent;
+}
+
 /* Light mode (fallback) */
 :root {
   --ifm-color-primary: #0066cc;
