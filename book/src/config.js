@@ -16,14 +16,6 @@ export const API_ENDPOINTS = {
   // Health check
   health: `${API_BASE_URL}/health`,
 
-  // Authentication endpoints
-  signup: `${API_BASE_URL}/api/auth/signup`,
-  login: `${API_BASE_URL}/api/auth/login`,
-  logout: `${API_BASE_URL}/api/auth/logout`,
-
-  // User profile endpoints
-  profile: `${API_BASE_URL}/api/user/profile`,
-
   // Chat endpoints
   chat: `${API_BASE_URL}/api/chat`,
   chatHistory: `${API_BASE_URL}/api/chat/history`,
