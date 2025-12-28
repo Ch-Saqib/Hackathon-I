@@ -3,11 +3,6 @@
   "outputDirectory": "build",
   "installCommand": "pnpm install",
   "regions": ["iad1"],
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "@vercel/node@3.0.0"
-    }
-  },
   "rewrites": [
     { "source": "/api/auth/:path*", "destination": "/api/auth/[...all]" },
     { "source": "/(.*)", "destination": "/" }
