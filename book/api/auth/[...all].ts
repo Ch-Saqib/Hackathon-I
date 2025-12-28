@@ -1,10 +1,11 @@
 // Physical AI Textbook - Better Auth API Handler (Vercel Serverless Function)
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { auth } from "../../src/lib/auth";
+import { toNodeHandler } from "better-auth/node";
 
-// Export handler for Vercel Edge/Serverless
-export const GET = auth.handler;
-export const POST = auth.handler;
+// Convert Better Auth handler to Vercel serverless format
+const handler = toNodeHandler(auth);
 
-// Required for Vercel Serverless Functions
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+export default async function (req: VercelRequest, res: VercelResponse) {
+  return handler(req, res);
+}
