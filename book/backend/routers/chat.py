@@ -1,8 +1,7 @@
 # Physical AI Textbook Backend - Chat Router (RAG Chatbot)
 from datetime import datetime
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from agents import Agent, Runner, OpenAIChatCompletionsModel
 from openai import AsyncOpenAI
@@ -14,7 +13,6 @@ from utils.prompt_builder import build_system_prompt
 
 # Router setup
 router = APIRouter()
-security = HTTPBearer(auto_error=False)
 settings = get_settings()
 
 # Google Gemini OpenAI-compatible endpoint
@@ -70,45 +68,8 @@ class ChatHistoryResponse(BaseModel):
 chat_sessions: dict[str, list[dict]] = {}
 
 
-async def get_optional_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
-) -> Optional[dict]:
-    """Get current user if authenticated, None otherwise."""
-    if not credentials:
-        return None
-
-    try:
-        from routers.auth import decode_token, get_db_connection
-
-        payload = decode_token(credentials.credentials)
-        user_id = payload.get("sub")
-
-        if not user_id:
-            return None
-
-        # Get user profile
-        conn = await get_db_connection()
-        try:
-            user = await conn.fetchrow(
-                """
-                SELECT id, email, software_skills, hardware_inventory
-                FROM users WHERE id = $1
-                """,
-                user_id,
-            )
-            return dict(user) if user else None
-        finally:
-            await conn.close()
-
-    except Exception:
-        return None
-
-
 @router.post("/chat", response_model=ChatResponse)
-async def chat(
-    request: ChatRequest,
-    current_user: Optional[dict] = Depends(get_optional_user),
-):
+async def chat(request: ChatRequest):
     """
     Send a message to the Professor chatbot.
 
@@ -118,6 +79,7 @@ async def chat(
     - **message**: The user's question
     - **page_context**: Optional current page context for relevance filtering
     - **user_profile**: Optional user profile for personalized responses
+      (passed from frontend with softwareSkills and hardwareInventory)
     """
     try:
         # Get Qdrant client
@@ -139,13 +101,9 @@ async def chat(
             module_filter=module_filter,
         )
 
-        # Determine user profile for personalization
+        # Use user profile from request for personalization
+        # Frontend should pass user context from Better Auth session
         user_profile = request.user_profile
-        if current_user and not user_profile:
-            user_profile = {
-                "software_skills": current_user.get("software_skills", []),
-                "hardware_inventory": current_user.get("hardware_inventory", []),
-            }
 
         # Build system prompt with context and personalization
         system_prompt = build_system_prompt(
@@ -201,70 +159,6 @@ async def chat(
         raise HTTPException(
             status_code=500,
             detail=f"Chat processing failed: {str(e)}",
-        )
-
-
-@router.get("/chat/history", response_model=ChatHistoryResponse)
-async def get_chat_history(
-    limit: int = 20,
-    offset: int = 0,
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-):
-    """
-    Get chat history for the authenticated user.
-
-    - **limit**: Maximum number of messages to return (default: 20)
-    - **offset**: Number of messages to skip (default: 0)
-    """
-    if not credentials:
-        raise HTTPException(
-            status_code=401,
-            detail="Authentication required for chat history",
-        )
-
-    try:
-        from routers.auth import decode_token
-
-        payload = decode_token(credentials.credentials)
-        user_id = payload.get("sub")
-
-        if not user_id:
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid token",
-            )
-
-        # Get user's chat history (in-memory for now)
-        user_history = chat_sessions.get(user_id, [])
-
-        # Apply pagination
-        total = len(user_history)
-        paginated = user_history[offset : offset + limit]
-
-        # Format response
-        messages = [
-            ChatHistoryItem(
-                id=f"{user_id}-{i}",
-                role=msg.get("role", "user"),
-                content=msg.get("content", ""),
-                created_at=msg.get("created_at", datetime.utcnow()),
-            )
-            for i, msg in enumerate(paginated, start=offset)
-        ]
-
-        return ChatHistoryResponse(
-            messages=messages,
-            total=total,
-            offset=offset,
-            limit=limit,
-        )
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to retrieve chat history: {str(e)}",
         )
 
 

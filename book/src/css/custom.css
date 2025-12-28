@@ -12,7 +12,7 @@
 .hero__subtitle {
   font-size: 1.3rem;
   opacity: 0.75;
-  color: #ffffff
+  color: #ffffff;
 }
 
 .hero {
@@ -512,12 +512,27 @@ html {
   .menu__link,
   .navbar__link {
     min-height: 44px;
+    min-width: 44px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
   }
 
   /* Increase tap targets */
   .menu__link--sublist-caret::after {
+    padding: 0.5rem;
+  }
+
+  /* Better touch feedback */
+  .button:active,
+  .menu__link:active {
+    opacity: 0.8;
+    transform: scale(0.98);
+  }
+
+  /* Ensure all interactive elements have adequate spacing */
+  a,
+  button {
     padding: 0.5rem;
   }
 }

@@ -4,7 +4,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 
 # Import routers
-from routers.auth import router as auth_router
 from routers.chat import router as chat_router
 
 # Initialize FastAPI app
@@ -47,6 +46,6 @@ async def root():
     }
 
 
-# Register routers
-app.include_router(auth_router, prefix="/api", tags=["Authentication"])
+# Register routers (auth is now handled by Better Auth on Vercel)
 app.include_router(chat_router, prefix="/api", tags=["Chat"])
+

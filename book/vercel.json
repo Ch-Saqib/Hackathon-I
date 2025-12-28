@@ -1,12 +1,15 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "prisma generate && npm run build",
   "outputDirectory": "build",
   "installCommand": "pnpm install",
   "regions": ["iad1"],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/"
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "@vercel/node@3.0.0"
     }
+  },
+  "rewrites": [
+    { "source": "/api/auth/:path*", "destination": "/api/auth/[...all]" },
+    { "source": "/(.*)", "destination": "/" }
   ]
 }

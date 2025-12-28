@@ -1,7 +1,8 @@
-// Physical AI Textbook - Chat Widget Component (Ask the Professor)
+// Physical AI Textbook - Chat Widget Component (Ask the Professor) - Better Auth
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { API_ENDPOINTS } from "../config";
+import { useSession } from "../lib/auth-client";
 import styles from "./ChatWidget.module.css";
 
 // Chat icon SVG
@@ -34,26 +35,25 @@ const NewChatIcon = () => (
   </svg>
 );
 
-export default function ChatWidget() {
+// Memoize component to prevent unnecessary re-renders and reduce memory usage
+const ChatWidget = React.memo(function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Load user profile on mount
-  useEffect(() => {
-    const token = localStorage.getItem("auth_token");
-    if (token) {
-      setIsAuthenticated(true);
-      fetchUserProfile(token);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, []);
+  // Use Better Auth session
+  const { data: session, isPending } = useSession();
+  const isAuthenticated = !!session?.user;
+  const user = session?.user;
+
+  // Build user profile for chat personalization
+  const userProfile = user ? {
+    softwareSkills: user.softwareSkills || [],
+    hardwareInventory: user.hardwareInventory || [],
+  } : null;
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -68,20 +68,6 @@ export default function ChatWidget() {
       inputRef.current.focus();
     }
   }, [isOpen]);
-
-  const fetchUserProfile = async (token) => {
-    try {
-      const response = await axios.get(API_ENDPOINTS.profile, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUserProfile({
-        software_skills: response.data.software_skills || [],
-        hardware_inventory: response.data.hardware_inventory || [],
-      });
-    } catch (err) {
-      console.log("User not authenticated for personalization");
-    }
-  };
 
   const getCurrentPageContext = () => {
     // Get current page URL for context-aware responses
@@ -114,7 +100,11 @@ export default function ChatWidget() {
         content: response.data.answer,
         sources: response.data.sources,
       };
-      setMessages((prev) => [...prev, assistantMessage]);
+      setMessages((prev) => {
+        const newMessages = [...prev, assistantMessage];
+        // Limit messages to 50 to prevent unbounded memory growth
+        return newMessages.length > 50 ? newMessages.slice(-50) : newMessages;
+      });
     } catch (err) {
       // Add error message
       const errorMessage = {
@@ -264,7 +254,13 @@ export default function ChatWidget() {
           </div>
 
           {/* Input or Login Prompt */}
-          {isAuthenticated ? (
+          {isPending ? (
+            <div className={styles.inputContainer}>
+              <div style={{ padding: "16px", textAlign: "center", color: "#666" }}>
+                Loading...
+              </div>
+            </div>
+          ) : isAuthenticated ? (
             <div className={styles.inputContainer}>
               <input
                 ref={inputRef}
@@ -304,4 +300,6 @@ export default function ChatWidget() {
       )}
     </>
   );
-}
+});
+
+export default ChatWidget;
