@@ -1,55 +1,28 @@
 // Physical AI Textbook - User Profile Page
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Layout from "@theme/Layout";
-import axios from "axios";
-import { API_ENDPOINTS } from "../config";
+import { useSession, signOut } from "../lib/auth-client";
 import styles from "./profile.module.css";
 
 export default function ProfilePage() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-  const [editFormData, setEditFormData] = useState({});
+  const { data: session, isPending, error: sessionError } = useSession();
+  const user = session?.user;
 
   useEffect(() => {
-    fetchUserProfile();
-  }, []);
-
-  const fetchUserProfile = async () => {
-    try {
-      const token = localStorage.getItem("auth_token");
-      if (!token) {
-        window.location.href = "/login";
-        return;
-      }
-
-      const response = await axios.get(API_ENDPOINTS.profile, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setUser(response.data);
-      setEditFormData(response.data);
-    } catch (err) {
-      console.error("Error fetching profile:", err);
-      if (err.response?.status === 401) {
-        window.location.href = "/login";
-      } else {
-        setError("Failed to load profile. Please try again.");
-      }
-    } finally {
-      setLoading(false);
+    // Redirect to login if not authenticated (after loading completes)
+    if (!isPending && !session) {
+      window.location.href = "/login?return=/profile";
     }
-  };
+  }, [isPending, session]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (window.confirm("Are you sure you want to log out?")) {
-      localStorage.removeItem("auth_token");
+      await signOut();
       window.location.href = "/";
     }
   };
 
-  if (loading) {
+  if (isPending) {
     return (
       <Layout title="Profile" description="Your profile">
         <div className={styles.profileContainer}>
@@ -59,11 +32,13 @@ export default function ProfilePage() {
     );
   }
 
-  if (error && !user) {
+  if (sessionError || !user) {
     return (
       <Layout title="Profile" description="Your profile">
         <div className={styles.profileContainer}>
-          <div className={styles.errorBox}>{error}</div>
+          <div className={styles.errorBox}>
+            {sessionError?.message || "Please log in to view your profile."}
+          </div>
         </div>
       </Layout>
     );
@@ -77,14 +52,19 @@ export default function ProfilePage() {
           <div className={styles.profileHeader}>
             <div className={styles.profileAvatarSection}>
               <div className={styles.avatar}>
-                {user?.email
-                  ? user.email.charAt(0).toUpperCase()
-                  : "U"}
+                {user?.image ? (
+                  <img src={user.image} alt={user.name || "User"} />
+                ) : (
+                  (user?.email || user?.name || "U").charAt(0).toUpperCase()
+                )}
               </div>
               <div className={styles.emailSection}>
-                <h1 className={styles.email}>{user?.email}</h1>
+                <h1 className={styles.email}>{user?.name || user?.email}</h1>
                 <p className={styles.memberSince}>
-                  Member since {new Date(user?.created_at).toLocaleDateString()}
+                  {user?.email}
+                  {user?.createdAt && (
+                    <> • Member since {new Date(user.createdAt).toLocaleDateString()}</>
+                  )}
                 </p>
               </div>
             </div>
@@ -98,8 +78,8 @@ export default function ProfilePage() {
                 <h2 className={styles.sectionTitle}>📝 Software Background</h2>
               </div>
               <div className={styles.skillsDisplay}>
-                {user?.software_skills && user.software_skills.length > 0 ? (
-                  user.software_skills.map((skill) => (
+                {user?.softwareSkills && user.softwareSkills.length > 0 ? (
+                  user.softwareSkills.map((skill) => (
                     <span key={skill} className={styles.skillBadge}>
                       {skill}
                     </span>
@@ -116,8 +96,8 @@ export default function ProfilePage() {
                 <h2 className={styles.sectionTitle}>⚡ Hardware Access</h2>
               </div>
               <div className={styles.skillsDisplay}>
-                {user?.hardware_inventory && user.hardware_inventory.length > 0 ? (
-                  user.hardware_inventory.map((hardware) => (
+                {user?.hardwareInventory && user.hardwareInventory.length > 0 ? (
+                  user.hardwareInventory.map((hardware) => (
                     <span key={hardware} className={styles.hardwareBadge}>
                       {hardware}
                     </span>

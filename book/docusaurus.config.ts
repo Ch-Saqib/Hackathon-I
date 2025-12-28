@@ -1,13 +1,13 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
-import type * as Preset from '@docusaurus/preset-classic';
+import { themes as prismThemes } from "prism-react-renderer";
+import type { Config } from "@docusaurus/types";
+import type * as Preset from "@docusaurus/preset-classic";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Physical AI & Humanoid Robotics',
-  tagline: 'The Partnership of People, Agents, and Robots',
-  favicon: 'img/favicon.ico',
+  title: "Physical AI & Humanoid Robotics",
+  tagline: "The Partnership of People, Agents, and Robots",
+  favicon: "img/favicon.ico",
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -16,48 +16,81 @@ const config: Config = {
 
   // Set the production url of your site here
   // For Vercel deployment, this should be your Vercel URL (or custom domain)
-  url: 'https://hackathon-i-nine.vercel.app',
+  url: "https://hackathon-i-nine.vercel.app",
   // Set the /<baseUrl>/ pathname under which your site is served.
   // On Vercel, the site is typically served from the root, so use '/'.
-  baseUrl: '/',
+  baseUrl: "/",
 
   // GitHub pages deployment config.
-  organizationName: 'saqib-squad', // GitHub org/user name.
-  projectName: 'Hackathon-I', // Repo name.
+  organizationName: "saqib-squad", // GitHub org/user name.
+  projectName: "Hackathon-I", // Repo name.
   trailingSlash: false,
-  deploymentBranch: 'gh-pages',
+  deploymentBranch: "gh-pages",
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: "throw",
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang.
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: "en",
+    locales: ["en"],
   },
+
+  // Responsive design configuration
+  headTags: [
+    {
+      tagName: "meta",
+      attributes: {
+        name: "viewport",
+        content:
+          "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes",
+      },
+    },
+    {
+      tagName: "meta",
+      attributes: {
+        name: "mobile-web-app-capable",
+        content: "yes",
+      },
+    },
+    {
+      tagName: "meta",
+      attributes: {
+        name: "apple-mobile-web-app-capable",
+        content: "yes",
+      },
+    },
+    {
+      tagName: "meta",
+      attributes: {
+        name: "apple-mobile-web-app-status-bar-style",
+        content: "black-translucent",
+      },
+    },
+  ],
 
   // Enable Mermaid for architecture diagrams (Constitution Principle IV)
   markdown: {
     mermaid: true,
   },
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: ["@docusaurus/theme-mermaid"],
 
   presets: [
     [
-      'classic',
+      "classic",
       {
         docs: {
-          sidebarPath: './sidebars.ts',
+          sidebarPath: "./sidebars.ts",
           // Remove edit links for now
           editUrl: undefined,
         },
         blog: false, // Disable blog for textbook
         pages: {
-          path: 'src/pages',
-          routeBasePath: '/',
+          path: "src/pages",
+          routeBasePath: "/",
         },
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: "./src/css/custom.css",
         },
       } satisfies Preset.Options,
     ],
@@ -65,85 +98,85 @@ const config: Config = {
 
   themeConfig: {
     // Social card for Physical AI textbook
-    image: 'img/docusaurus-social-card.jpg',
+    image: "img/docusaurus-social-card.jpg",
 
     // Dark mode as default (Constitution requirement)
     colorMode: {
-      defaultMode: 'dark',
+      defaultMode: "dark",
       disableSwitch: false,
       respectPrefersColorScheme: false,
     },
 
     // Mermaid configuration for diagrams
     mermaid: {
-      theme: {light: 'neutral', dark: 'dark'},
+      theme: { light: "neutral", dark: "dark" },
     },
 
     navbar: {
-      title: 'Physical AI & Humanoid Robotics',
+      title: "Physical AI & Humanoid Robotics",
       logo: {
-        alt: 'Physical AI Logo',
-        src: 'img/logo.svg',
+        alt: "Physical AI Logo",
+        src: "img/logo.svg",
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'module01Sidebar',
-          position: 'left',
-          label: 'Module 1: ROS 2',
+          type: "docSidebar",
+          sidebarId: "module01Sidebar",
+          position: "left",
+          label: "Module 1: ROS 2",
         },
         {
-          type: 'docSidebar',
-          sidebarId: 'module02Sidebar',
-          position: 'left',
-          label: 'Module 2: Digital Twin',
+          type: "docSidebar",
+          sidebarId: "module02Sidebar",
+          position: "left",
+          label: "Module 2: Digital Twin",
         },
         {
-          href: 'https://github.com/saqib-squad/Hackathon-I',
-          label: 'GitHub',
-          position: 'right',
+          href: "https://github.com/saqib-squad/Hackathon-I",
+          label: "GitHub",
+          position: "right",
         },
       ],
     },
     footer: {
-      style: 'dark',
+      style: "dark",
       links: [
         {
-          title: 'Modules',
+          title: "Modules",
           items: [
             {
-              label: 'Module 1: ROS 2 - The Robotic Nervous System',
-              to: '/docs/module-01-ros2/architecture',
+              label: "Module 1: ROS 2 - The Robotic Nervous System",
+              to: "/docs/module-01-ros2/architecture",
             },
             {
-              label: 'Module 2: Digital Twin',
-              to: '/docs/module-02-digital-twin/physics-simulation',
+              label: "Module 2: Digital Twin",
+              to: "/docs/module-02-digital-twin/physics-simulation",
             },
           ],
         },
         {
-          title: 'Resources',
+          title: "Resources",
           items: [
             {
-              label: 'ROS 2 Documentation',
-              href: 'https://docs.ros.org/en/humble/',
+              label: "ROS 2 Documentation",
+              href: "https://docs.ros.org/en/humble/",
             },
             {
-              label: 'Gazebo Sim',
-              href: 'https://gazebosim.org/',
+              label: "Gazebo Sim",
+              href: "https://gazebosim.org/",
             },
             {
-              label: 'NVIDIA Isaac Sim',
-              href: 'https://developer.nvidia.com/isaac-sim',
+              label: "NVIDIA Isaac Sim",
+              href: "https://developer.nvidia.com/isaac-sim",
             },
           ],
         },
         {
-          title: 'Community',
+          title: "Community",
           items: [
             {
-              label: 'GitHub',
-              href: 'https://github.com/saqib-squad/Hackathon-I',
+              label: "GitHub",
+              href: "https://github.com/saqib-squad/Hackathon-I",
             },
           ],
         },
@@ -153,7 +186,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
-      additionalLanguages: ['bash', 'python', 'yaml'],
+      additionalLanguages: ["bash", "python", "yaml"],
     },
   } satisfies Preset.ThemeConfig,
 };

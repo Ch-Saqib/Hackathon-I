@@ -1,8 +1,7 @@
 // Physical AI Textbook - Signup Page (Apple-inspired Design)
 import React, { useState } from "react";
 import Layout from "@theme/Layout";
-import axios from "axios";
-import { API_ENDPOINTS } from "../config";
+import { signUp } from "../lib/auth-client";
 import styles from "./auth.module.css";
 
 // Software background options
@@ -67,25 +66,27 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post(API_ENDPOINTS.signup, {
+      const result = await signUp.email({
         email,
         password,
-        software_skills: softwareSkills.filter((s) => s !== "None"),
-        hardware_inventory: hardwareInventory.filter((h) => h !== "None"),
+        name: email.split("@")[0], // Use email prefix as name
+        softwareSkills: softwareSkills.filter((s) => s !== "None"),
+        hardwareInventory: hardwareInventory.filter((h) => h !== "None"),
       });
 
-      // Store token and email
-      localStorage.setItem("auth_token", response.data.access_token);
-      localStorage.setItem("user_email", email);
+      if (result.error) {
+        setError(result.error.message || "Signup failed. Please try again.");
+        setLoading(false);
+        return;
+      }
 
       // Redirect to home or previous page
       const returnUrl = new URLSearchParams(window.location.search).get("return") || "/";
       window.location.href = returnUrl;
     } catch (err) {
       setError(
-        err.response?.data?.detail || "Signup failed. Please try again."
+        err.message || "Signup failed. Please try again."
       );
-    } finally {
       setLoading(false);
     }
   };

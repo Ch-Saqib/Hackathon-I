@@ -1,8 +1,7 @@
 // Physical AI Textbook - Login Page (Apple-inspired Design)
 import React, { useState } from "react";
 import Layout from "@theme/Layout";
-import axios from "axios";
-import { API_ENDPOINTS } from "../config";
+import { signIn } from "../lib/auth-client";
 import styles from "./auth.module.css";
 
 export default function LoginPage() {
@@ -18,23 +17,24 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post(API_ENDPOINTS.login, {
+      const result = await signIn.email({
         email,
         password,
       });
 
-      // Store token and email
-      localStorage.setItem("auth_token", response.data.access_token);
-      localStorage.setItem("user_email", email);
+      if (result.error) {
+        setError(result.error.message || "Login failed. Please check your credentials.");
+        setLoading(false);
+        return;
+      }
 
       // Redirect to previous page or home
       const returnUrl = new URLSearchParams(window.location.search).get("return") || "/";
       window.location.href = returnUrl;
     } catch (err) {
       setError(
-        err.response?.data?.detail || "Login failed. Please check your credentials."
+        err.message || "Login failed. Please check your credentials."
       );
-    } finally {
       setLoading(false);
     }
   };

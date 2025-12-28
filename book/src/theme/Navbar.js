@@ -1,5 +1,6 @@
-// Physical AI Textbook - Navbar Component with Profile Dropdown
+// Physical AI Textbook - Navbar Component with Profile Dropdown (Better Auth)
 import React, { useState, useEffect, useRef } from "react";
+import { useSession, signOut } from "../lib/auth-client";
 
 const ProfileIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" style={{ display: 'block' }}>
@@ -17,9 +18,11 @@ const LogoutIcon = () => (
 );
 
 // Profile Dropdown Component
-function ProfileDropdown({ userEmail, onLogout }) {
+function ProfileDropdown({ user, onLogout }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const userEmail = user?.email || "";
+  const userName = user?.name || userEmail.split("@")[0];
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -84,7 +87,10 @@ function ProfileDropdown({ userEmail, onLogout }) {
           }}
         >
           <div style={{ padding: '12px 16px', borderBottom: '1px solid #e5e5ea' }}>
-            <p style={{ margin: 0, fontSize: '12px', color: '#6f6f77', fontWeight: '500', wordBreak: 'break-all' }}>
+            <p style={{ margin: 0, fontSize: '14px', color: '#1d1d1d', fontWeight: '600' }}>
+              {userName}
+            </p>
+            <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#6f6f77', wordBreak: 'break-all' }}>
               {userEmail}
             </p>
           </div>
@@ -192,23 +198,15 @@ const signupButtonStyle = {
 
 // Wrapper component for Navbar
 function NavbarWrapper(props) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userEmail, setUserEmail] = useState("");
+  const { data: session, isPending } = useSession();
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Check authentication status on mount and when storage changes
+  const isAuthenticated = !!session?.user;
+  const user = session?.user;
+
   useEffect(() => {
     setMounted(true);
-    const checkAuth = () => {
-      const token = localStorage.getItem("auth_token");
-      const email = localStorage.getItem("user_email");
-      const isAuth = !!token;
-      setIsAuthenticated(isAuth);
-      setUserEmail(email || "");
-    };
-
-    checkAuth();
 
     // Check if mobile
     const checkMobile = () => {
@@ -218,37 +216,37 @@ function NavbarWrapper(props) {
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
-    // Listen for storage changes (login/logout)
-    const handleStorageChange = () => {
-      checkAuth();
-    };
-    
-    // Also listen for custom auth events
-    const handleAuthChange = () => {
-      checkAuth();
-    };
-    
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("authChange", handleAuthChange);
-    
     return () => {
       window.removeEventListener("resize", checkMobile);
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("authChange", handleAuthChange);
     };
   }, []);
 
   // Inject auth buttons into mobile sidebar when it opens
   useEffect(() => {
-    if (!mounted || !isMobile) return;
+    if (!mounted || !isMobile || isPending) return;
+
+    // Store reference to logout handler for cleanup
+    let currentLogoutBtn = null;
+    const logoutHandler = async () => {
+      await signOut();
+      window.location.href = "/";
+    };
 
     const injectMobileAuthButtons = () => {
       // Target the menu inside the sidebar panel, not the flex container
       const sidebarMenu = document.querySelector('.navbar-sidebar .menu');
       if (!sidebarMenu) return;
       
-      // Check if we already injected
-      if (document.querySelector('.mobile-auth-buttons')) return;
+      // Remove existing auth buttons first
+      const existing = document.querySelector('.mobile-auth-buttons');
+      if (existing) {
+        // Clean up old event listener if it exists
+        if (currentLogoutBtn) {
+          currentLogoutBtn.removeEventListener('click', logoutHandler);
+          currentLogoutBtn = null;
+        }
+        existing.remove();
+      }
 
       const authContainer = document.createElement('div');
       authContainer.className = 'mobile-auth-buttons';
@@ -261,10 +259,12 @@ function NavbarWrapper(props) {
         margin-top: 20px;
       `;
       
-      if (isAuthenticated) {
+      if (isAuthenticated && user) {
+        const userName = user.name || user.email?.split("@")[0] || "User";
         authContainer.innerHTML = `
-          <div style="padding: 8px 0; color: var(--ifm-color-emphasis-600); font-size: 13px; word-break: break-all;">
-            ${userEmail}
+          <div style="padding: 8px 0; color: var(--ifm-color-emphasis-600); font-size: 13px;">
+            <strong>${userName}</strong><br/>
+            <span style="font-size: 12px; word-break: break-all;">${user.email || ""}</span>
           </div>
           <a href="/profile" style="
             display: flex;
@@ -335,46 +335,48 @@ function NavbarWrapper(props) {
       
       sidebarMenu.appendChild(authContainer);
 
-      // Add logout handler if authenticated
+      // Add logout handler if authenticated with proper cleanup
       if (isAuthenticated) {
-        const logoutBtn = document.getElementById('mobile-logout-btn');
-        if (logoutBtn) {
-          logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem("auth_token");
-            localStorage.removeItem("user_email");
-            window.location.href = "/";
-          });
+        currentLogoutBtn = document.getElementById('mobile-logout-btn');
+        if (currentLogoutBtn) {
+          currentLogoutBtn.addEventListener('click', logoutHandler);
         }
       }
     };
 
-    // Watch for sidebar opening
+    // OPTIMIZED: Watch only the navbar element, not entire document.body
+    // This significantly reduces memory usage and DOM observation overhead
+    const navbarElement = document.querySelector('.navbar');
+    if (!navbarElement) return;
+
     const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.type === 'childList' || mutation.type === 'attributes') {
-          const sidebarMenu = document.querySelector('.navbar-sidebar .menu');
-          if (sidebarMenu && !document.querySelector('.mobile-auth-buttons')) {
-            injectMobileAuthButtons();
-          }
-        }
+      // Check if sidebar is now visible
+      const sidebarMenu = document.querySelector('.navbar-sidebar .menu');
+      if (sidebarMenu && !document.querySelector('.mobile-auth-buttons')) {
+        injectMobileAuthButtons();
       }
     });
 
-    observer.observe(document.body, { 
-      childList: true, 
-      subtree: true, 
+    // Only observe navbar, not the entire page
+    observer.observe(navbarElement, { 
+      childList: true,
+      subtree: true, // Still need subtree for navbar children
       attributes: true, 
       attributeFilter: ['class'] 
     });
 
-    return () => observer.disconnect();
-  }, [mounted, isMobile, isAuthenticated, userEmail]);
+    return () => {
+      // Clean up observer
+      observer.disconnect();
+      // Clean up event listener
+      if (currentLogoutBtn) {
+        currentLogoutBtn.removeEventListener('click', logoutHandler);
+      }
+    };
+  }, [mounted, isMobile, isAuthenticated, user, isPending]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("user_email");
-    setIsAuthenticated(false);
-    setUserEmail("");
+  const handleLogout = async () => {
+    await signOut();
     window.location.href = "/";
   };
 
@@ -384,8 +386,8 @@ function NavbarWrapper(props) {
   return (
     <div style={{ position: 'relative' }}>
       <Navbar {...props} />
-      {/* Inject auth buttons into navbar - hide on mobile */}
-      {mounted && !isMobile && (
+      {/* Inject auth buttons into navbar - hide on mobile and while loading */}
+      {mounted && !isMobile && !isPending && (
         <div
           style={{
             position: 'absolute',
@@ -399,7 +401,7 @@ function NavbarWrapper(props) {
           }}
         >
           {isAuthenticated ? (
-            <ProfileDropdown userEmail={userEmail} onLogout={handleLogout} />
+            <ProfileDropdown user={user} onLogout={handleLogout} />
           ) : (
             <>
               <a
